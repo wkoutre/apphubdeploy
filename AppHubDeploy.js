@@ -12,6 +12,7 @@ var APP_HUB_SECRET;
 var BUILD_FILE_NAME = 'AppHubBuild_' + Date.now() + '.zip';
 var BUILD_FILE_PATH = path.resolve('./', BUILD_FILE_NAME);
 var BUILD_URL_BASE  = 'https://dashboard.apphub.io/projects/';
+var BUILD_URL;
 
 program
   .version(package.version)
@@ -21,56 +22,74 @@ program
 
 if (program.configure) {
   setup();
-
-  build();
 }
 else {
-  // If run without any .apphub file then run setup.
-  fs.readFile( './.apphub', function ( error, data ) {
-    if (error) {
-      if (error.code != 'ENOENT') {
-        console.log('There was a problem with checking your .apphub file for credentials:');
-        console.log(error.message);
-        process.exit(1);
-      }
-
-      // If missing file, no problem, we'll kick off the Setup function to create it.
-      setup();
-    }
-    else {
-      // If .apphub exists, try and get values.
-      appHubData = JSON.parse(data);
-
-      console.log('.apphub file exists! Reading credentials.');
-
-      APP_HUB_ID     = appHubData.appHubId;
-      APP_HUB_SECRET = appHubData.appHubSecret;
-    }
-
-    build();
-  });
+  readPreviouslySavedAppHubCredentials();
 }
+
+var BUILD_URL = BUILD_URL_BASE + APP_HUB_ID;
+
+build();
+
+deploy();
+
+if (program.openBuildUrl)
+  openBuildUrl();
+
+process.exit(0);
+
+// Private Functions
 
 
 function setup() {
-
   APP_HUB_ID     = readlineSync.question('AppHub App ID: ');
   APP_HUB_SECRET = readlineSync.question('AppHub App Secret: ');
 
   console.log('');
 
-  appHubCredentialsAsJSON = JSON.stringify( { "appHubId": APP_HUB_ID, "appHubSecret": APP_HUB_SECRET } );
+  var appHubCredentialsAsJSON = JSON.stringify( { "appHubId": APP_HUB_ID, "appHubSecret": APP_HUB_SECRET } );
 
-  fs.writeFile( './.apphub', appHubCredentialsAsJSON, { mode: 0600 }, function (error) {
-    if (error) {
-      console.log('There was an error saving your AppHub config to file.');
-      console.log(error.message);
-      process.exit(1);
-    }
-  });
+  try {
+    fs.writeFileSync( './.apphub', appHubCredentialsAsJSON, { mode: 0600 } );
+  }
+  catch (error) {
+    console.log('There was an error saving your AppHub config to file.');
+    console.log(error.message);
+    process.exit(1);
+  }
 
   console.log('AppHub configuration saved to .apphub for future deploys.');
   console.log('');
+};
+
+function readPreviouslySavedAppHubCredentials() {
+  // If run without any .apphub file then run setup.
+  var appHubData;
+  try {
+    var appHubFileData = fs.readFileSync( './.apphub' );
+    appHubData = JSON.parse(appHubFileData);
+
+    // If .apphub exists, try and get values.
+    if (!appHubData.appHubId.trim() || !appHubData.appHubSecret.trim())
+      throw new Error('One or both of your AppHub credentials are blank');
+
+    // .apphub file exists, can be read and the credentials are reasonable (i.e. present and not blank).
+    console.log('.apphub file exists! Reading credentials.');
+
+    APP_HUB_ID     = appHubData.appHubId;
+    APP_HUB_SECRET = appHubData.appHubSecret;
+  }
+  catch (error) {
+    if (error.code == 'ENOENT') {
+      // If missing file, no problem, we'll kick off the Setup function to create it.
+      setup();
+    }
+    else {
+      console.log('The contents of .apphub file were not what we were expecting. Try running with --configure command to re-enter your AppHub credentials.');
+      console.log('');
+      process.exit(1);
+    }
+  }
 };
 
 
@@ -83,40 +102,11 @@ function build() {
   console.log('');
   console.log('BUILD SUCCESSFUL!');
   console.log('');
-
-  deploy();
 };
 
 function deploy() {
   console.log('Deploying...');
   console.log('');
-
-  // var curl = require('curlrequest');
-
-  // var curlOptions = {
-  //   method: 'PUT',
-  //   headers: {
-  //     'X-AppHub-Application-ID': APP_HUB_ID,
-  //     'X-AppHub-Application-Secret': APP_HUB_SECRET,
-  //     'Content-Type': 'application/zip'
-  //   },
-  //   url: 'https://api.apphub.io/v1/upload',
-  //   'upload-file': BUILD_FILE_NAME,
-  // };
-
-  // curl.request( curlOptions, function (err, stdout, meta) {
-  //   console.log('%s %s', meta.cmd, meta.args.join(' '));
-  // });
-  // curlCommand =  'curl -X PUT';
-  // curlCommand += ' -H "X-AppHub-Application-ID: ' + APP_HUB_ID + '"';
-  // curlCommand += ' -H "X-AppHub-Application-Secret: ' + APP_HUB_SECRET + '"';
-  // curlCommand += ' -H "Content-Type: application/zip"';
-  // curlCommand += ' -L https://api.apphub.io/v1/upload';
-  // // curlCommand += ' --include'; // Includes the HTTP header in the output.
-  // curlCommand += ' --verbose';
-  // curlCommand += ' --upload-file ./' + BUILD_FILE_NAME;
-  // curlCommand += ' https://api.apphub.io/v1/upload';
-
 
   try {
     getUrlForPutCommand =  'curl -X GET';
@@ -183,50 +173,13 @@ function deploy() {
   console.log('SUCCESSFULLY BUILT AND DEPLOYED TO APPHUB!')
   console.log('');
 
-  var buildURL = BUILD_URL_BASE + APP_HUB_ID;
-  console.log('You can see your build here: ' + buildURL);
-
+  console.log('You can see your build here: ' + BUILD_URL);
   console.log('');
 
-  if (program.openBuildUrl) {
-    console.log('Opening AppHub Builds...');
+};
 
-    open(buildURL);
-  }
+function openBuildUrl() {
+  console.log('Opening AppHub Builds in your browser...');
 
-  process.exit(0);
-
-  // console.log('Deployed Successfully to AppHub.');
-  // console.log('You can view the build at ' + buildURL);
-
-  //       process.exit(0);
-  // request
-  //   .put('https://api.apphub.io/v1/upload')
-  //   .set('X-AppHub-Application-ID', APP_HUB_ID)
-  //   .set('X-AppHub-Application-Secret', APP_HUB_SECRET)
-  //   .set('Content-Type', 'application/zip')
-  //   .attach('', BUILD_FILE_NAME)
-  //   .end(function (err, res) {
-  //     console.log( res.req );
-
-  //     if (!err && res.ok) {
-  //       buildURL = 'https://dashboard.apphub.io/projects/' + APP_HUB_ID;
-
-  //       console.log('Deployed Successfully to AppHub.');
-  //       console.log('You can view the build at ' + buildURL);
-
-  //       process.exit(0);
-  //     }
-
-  //     var errorMessage;
-  //     if (res && res.status === 401) {
-  //       errorMessage = "Authentication failed! Bad username/password?";
-  //     } else if (err) {
-  //       errorMessage = err;
-  //     } else {
-  //       errorMessage = res.text;
-  //     }
-  //     console.error(errorMessage);
-  //     process.exit(1);
-  //   });
+  open(BUILD_URL);
 };
