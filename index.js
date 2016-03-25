@@ -2,6 +2,7 @@
 
 var fs           = require('fs');
 var open         = require('open');
+var package      = require('./package.json');
 var path         = require('path');
 var program      = require('commander');
 var readlineSync = require('readline-sync');
@@ -13,7 +14,7 @@ var BUILD_FILE_PATH = path.resolve('./', BUILD_FILE_NAME);
 var BUILD_URL_BASE  = 'https://dashboard.apphub.io/projects/';
 
 program
-  .version('1.0.0')
+  .version(package.version)
   .option('-c, --configure', '(Re)Configure AppHub ID and Secret key')
   .option('-o, --open-build-url', 'Open AppHub Builds URL after a successful build and deploy.')
   .parse(process.argv);
