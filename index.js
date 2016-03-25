@@ -14,38 +14,44 @@ var BUILD_URL_BASE  = 'https://dashboard.apphub.io/projects/';
 
 program
   .version('1.0.0')
-  .option('-c, --configure', 'Configure AppHub ID and Secret key')
+  .option('-c, --configure', '(Re)Configure AppHub ID and Secret key')
   .option('-o, --open-build-url', 'Open AppHub Builds URL after a successful build and deploy.')
   .parse(process.argv);
 
-// If run without any .apphub file then run setup.
-fs.readFile( './.apphub', function ( error, data ) {
-  if (error) {
-    if (error.code != 'ENOENT') {
-      console.log('There was a problem with checking your .apphub file for credentials:');
-      console.log(error.message);
-      process.exit(1);
-    }
-
-    // If missing file, no problem, we'll kick off the Setup function to create it.
-    setup();
-  }
-  else {
-    // If .apphub exists, try and get values.
-    appHubData = JSON.parse(data);
-
-    console.log('.apphub file exists! Reading credentials.');
-
-    APP_HUB_ID     = appHubData.appHubId;
-    APP_HUB_SECRET = appHubData.appHubSecret;
-  }
+if (program.configure) {
+  setup();
 
   build();
-});
+}
+else {
+  // If run without any .apphub file then run setup.
+  fs.readFile( './.apphub', function ( error, data ) {
+    if (error) {
+      if (error.code != 'ENOENT') {
+        console.log('There was a problem with checking your .apphub file for credentials:');
+        console.log(error.message);
+        process.exit(1);
+      }
+
+      // If missing file, no problem, we'll kick off the Setup function to create it.
+      setup();
+    }
+    else {
+      // If .apphub exists, try and get values.
+      appHubData = JSON.parse(data);
+
+      console.log('.apphub file exists! Reading credentials.');
+
+      APP_HUB_ID     = appHubData.appHubId;
+      APP_HUB_SECRET = appHubData.appHubSecret;
+    }
+
+    build();
+  });
+}
 
 
-
-var setup = function() {
+function setup() {
 
   APP_HUB_ID     = readlineSync.question('AppHub App ID: ');
   APP_HUB_SECRET = readlineSync.question('AppHub App Secret: ');
@@ -67,7 +73,7 @@ var setup = function() {
 };
 
 
-var build = function() {
+function build() {
   console.log('Building...');
 
   buildResult = require('child_process').execSync( './node_modules/.bin/apphub build --verbose -o ' + BUILD_FILE_NAME ).toString();
@@ -80,7 +86,7 @@ var build = function() {
   deploy();
 };
 
-var deploy = function() {
+function deploy() {
   console.log('Deploying...');
   console.log('');
 
