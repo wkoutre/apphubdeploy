@@ -1,12 +1,15 @@
 #!/usr/bin/env node --harmony
 
 var fs           = require('fs');
+var path         = require('path');
 var program      = require('commander');
 var readlineSync = require('readline-sync');
 
-var appHubId;
-var appHubSecret;
-var buildFilename = 'AppHubBuild.zip';
+var APP_HUB_ID;
+var APP_HUB_SECRET;
+var BUILD_FILE_NAME = 'AppHubBuild_' + Date.now() + '.zip';
+var BUILD_FILE_PATH = path.resolve('./', BUILD_FILE_NAME);
+var BUILD_URL_BASE  = 'https://dashboard.apphub.io/projects/';
 
 program
   .version('1.0.0')
@@ -31,8 +34,8 @@ fs.readFile( './.apphub', function ( error, data ) {
 
     console.log('.apphub file exists! Reading credentials.');
 
-    appHubId     = appHubData.appHubId;
-    appHubSecret = appHubData.appHubSecret;
+    APP_HUB_ID     = appHubData.appHubId;
+    APP_HUB_SECRET = appHubData.appHubSecret;
   }
 
   build();
@@ -42,12 +45,12 @@ fs.readFile( './.apphub', function ( error, data ) {
 
 var setup = function() {
 
-  appHubId     = readlineSync.question('AppHub App ID: ');
-  appHubSecret = readlineSync.question('AppHub App Secret: ');
+  APP_HUB_ID     = readlineSync.question('AppHub App ID: ');
+  APP_HUB_SECRET = readlineSync.question('AppHub App Secret: ');
 
   console.log('');
 
-  appHubCredentialsAsJSON = JSON.stringify( { "appHubId": appHubId, "appHubSecret": appHubSecret } );
+  appHubCredentialsAsJSON = JSON.stringify( { "appHubId": APP_HUB_ID, "appHubSecret": APP_HUB_SECRET } );
 
   fs.writeFile( './.apphub', appHubCredentialsAsJSON, { mode: 0600 }, function (error) {
     if (error) {
@@ -65,7 +68,7 @@ var setup = function() {
 var build = function() {
   console.log('Building...');
 
-  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build --verbose -o ' + buildFilename ).toString();
+  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build --verbose -o ' + BUILD_FILE_NAME ).toString();
 
   console.log(buildResult);
   console.log('');
@@ -84,32 +87,32 @@ var deploy = function() {
   // var curlOptions = {
   //   method: 'PUT',
   //   headers: {
-  //     'X-AppHub-Application-ID': appHubId,
-  //     'X-AppHub-Application-Secret': appHubSecret,
+  //     'X-AppHub-Application-ID': APP_HUB_ID,
+  //     'X-AppHub-Application-Secret': APP_HUB_SECRET,
   //     'Content-Type': 'application/zip'
   //   },
   //   url: 'https://api.apphub.io/v1/upload',
-  //   'upload-file': buildFilename,
+  //   'upload-file': BUILD_FILE_NAME,
   // };
 
   // curl.request( curlOptions, function (err, stdout, meta) {
   //   console.log('%s %s', meta.cmd, meta.args.join(' '));
   // });
   // curlCommand =  'curl -X PUT';
-  // curlCommand += ' -H "X-AppHub-Application-ID: ' + appHubId + '"';
-  // curlCommand += ' -H "X-AppHub-Application-Secret: ' + appHubSecret + '"';
+  // curlCommand += ' -H "X-AppHub-Application-ID: ' + APP_HUB_ID + '"';
+  // curlCommand += ' -H "X-AppHub-Application-Secret: ' + APP_HUB_SECRET + '"';
   // curlCommand += ' -H "Content-Type: application/zip"';
   // curlCommand += ' -L https://api.apphub.io/v1/upload';
   // // curlCommand += ' --include'; // Includes the HTTP header in the output.
   // curlCommand += ' --verbose';
-  // curlCommand += ' --upload-file ./' + buildFilename;
+  // curlCommand += ' --upload-file ./' + BUILD_FILE_NAME;
   // curlCommand += ' https://api.apphub.io/v1/upload';
 
 
   try {
     getUrlForPutCommand =  'curl -X GET';
-    getUrlForPutCommand += ' -H "X-AppHub-Application-ID: ' + appHubId + '"';
-    getUrlForPutCommand += ' -H "X-AppHub-Application-Secret: ' + appHubSecret + '"';
+    getUrlForPutCommand += ' -H "X-AppHub-Application-ID: ' + APP_HUB_ID + '"';
+    getUrlForPutCommand += ' -H "X-AppHub-Application-Secret: ' + APP_HUB_SECRET + '"';
     getUrlForPutCommand += ' -H "Content-Type: application/zip"';
     getUrlForPutCommand += ' -L https://api.apphub.io/v1/upload';
     getUrlForPutCommand += ' | python -c \'import json,sys;obj=json.load(sys.stdin);print obj["data"]["s3_url"]\'';
@@ -122,7 +125,7 @@ var deploy = function() {
     putCommand  = 'curl -X PUT';
     putCommand += ' -H "Content-Type: application/zip"';
     putCommand += ' -L "' + urlForPut + '"';
-    putCommand += ' --upload-file ' + buildFilename;
+    putCommand += ' --upload-file ' + BUILD_FILE_NAME;
 
     console.log('putCommand:');
     console.log(putCommand);
@@ -132,8 +135,6 @@ var deploy = function() {
     console.log( putResponse );
     console.log('');
     console.log("DEPLOY SUCCESSFUL!");
-
-    process.exit(0);
   }
   catch(error) {
     console.log('');
@@ -143,7 +144,41 @@ var deploy = function() {
     process.exit(1);
   }
 
-  // buildURL = 'https://dashboard.apphub.io/projects/' + appHubId;
+  try {
+    console.log('');
+    console.log('Removing Build File...');
+    console.log('');
+
+
+    console.log('BUILD_FILE_PATH: ')
+    console.log(BUILD_FILE_PATH);
+
+    fs.unlinkSync(BUILD_FILE_PATH)
+
+    console.log('BUILD FILE REMOVED!');
+    console.log('');
+
+
+
+  }
+  catch(error) {
+    console.log('');
+    console.log('There was a problem removing the build file: ' + BUILD_FILE_PATH);
+    console.log('');
+    console.log(error);
+
+    process.exit(1);
+  }
+
+  console.log('');
+  console.log('SUCCESSFULLY BUILT AND DEPLOYED TO APPHUB!')
+  console.log('');
+
+  var buildURL = BUILD_URL_BASE + APP_HUB_ID;
+  console.log('You can see your build here: ' + buildURL);
+
+  console.log('');
+  process.exit(0);
 
   // console.log('Deployed Successfully to AppHub.');
   // console.log('You can view the build at ' + buildURL);
@@ -151,15 +186,15 @@ var deploy = function() {
   //       process.exit(0);
   // request
   //   .put('https://api.apphub.io/v1/upload')
-  //   .set('X-AppHub-Application-ID', appHubId)
-  //   .set('X-AppHub-Application-Secret', appHubSecret)
+  //   .set('X-AppHub-Application-ID', APP_HUB_ID)
+  //   .set('X-AppHub-Application-Secret', APP_HUB_SECRET)
   //   .set('Content-Type', 'application/zip')
-  //   .attach('', buildFilename)
+  //   .attach('', BUILD_FILE_NAME)
   //   .end(function (err, res) {
   //     console.log( res.req );
 
   //     if (!err && res.ok) {
-  //       buildURL = 'https://dashboard.apphub.io/projects/' + appHubId;
+  //       buildURL = 'https://dashboard.apphub.io/projects/' + APP_HUB_ID;
 
   //       console.log('Deployed Successfully to AppHub.');
   //       console.log('You can view the build at ' + buildURL);
