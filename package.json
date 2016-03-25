@@ -1,0 +1,29 @@
+{
+  "name": "apphubdeploy",
+  "version": "1.0.0",
+  "description": "Simple CLI to build and deploy to AppHub in one fell swoop.",
+  "bin": {
+    "apphubdeploy": "./index.js"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joshuapinter/apphubdeploy.git"
+  },
+  "keywords": [
+    "AppHub"
+  ],
+  "author": "Joshua Pinter",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joshuapinter/apphubdeploy/issues"
+  },
+  "homepage": "https://github.com/joshuapinter/apphubdeploy#readme",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "readline-sync": "^1.4.1"
+  }
+}
