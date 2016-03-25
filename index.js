@@ -15,6 +15,7 @@ var BUILD_URL_BASE  = 'https://dashboard.apphub.io/projects/';
 program
   .version('1.0.0')
   .option('-c, --configure', 'Configure AppHub ID and Secret key')
+  .option('-o, --open-build-url', 'Open AppHub Builds URL after a successful build and deploy.')
   .parse(process.argv);
 
 // If run without any .apphub file then run setup.
@@ -180,7 +181,11 @@ var deploy = function() {
 
   console.log('');
 
-  open(buildURL);
+  if (program.openBuildUrl) {
+    console.log('Opening AppHub Builds...');
+
+    open(buildURL);
+  }
 
   process.exit(0);
 
