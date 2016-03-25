@@ -24,6 +24,7 @@
   "homepage": "https://github.com/joshuapinter/apphubdeploy#readme",
   "dependencies": {
     "commander": "^2.9.0",
+    "open": "0.0.5",
     "readline-sync": "^1.4.1"
   }
 }

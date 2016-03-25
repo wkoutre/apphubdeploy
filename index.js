@@ -1,6 +1,7 @@
 #!/usr/bin/env node --harmony
 
 var fs           = require('fs');
+var open         = require('open');
 var path         = require('path');
 var program      = require('commander');
 var readlineSync = require('readline-sync');
@@ -178,6 +179,9 @@ var deploy = function() {
   console.log('You can see your build here: ' + buildURL);
 
   console.log('');
+
+  open(buildURL);
+
   process.exit(0);
 
   // console.log('Deployed Successfully to AppHub.');
