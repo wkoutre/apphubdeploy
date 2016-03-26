@@ -16,14 +16,14 @@ var BUILD_URL;
 
 program
   .version(package.version)
-  .option('-a, --app-versions <app-versions>',     '(Array of Strings, optional): Compatible app versions of the build. Example: -a \'["1.0.3", "1.0.4"]\' Defaults to value in info.plist of build file.' )
-  .option('-c, --configure',                       '(Re)Configure AppHub ID and Secret key')
-  .option('-d, --build-description <description>', '(String, optional): Description of the build.')
+  .option('-a, --app-versions <app-versions>',     'Array of app version strings that are compatible with this build. MUST wrap version numbers in double quotes! Example: -a \'["1.0.3", "1.0.4"]\' Defaults to value in info.plist of build file.' )
+  .option('-c, --configure',                       '(Re)Configure AppHub ID and Secret key.')
+  .option('-d, --build-description <description>', 'Description of the build. Wrap in quotes if more than one word.')
   .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
-  .option('-n, --build-name <name>',               '(String, optional): Name of the build.')
+  .option('-n, --build-name <name>',               'Name of the build. Wrap in quotes if more than one word.')
   .option('-r, --retain-build',                    'Do not remove the build after a successful deploy. By default it will be removed.')
-  .option('-t, --target <target>',                 '(String, optional, default: none): One of [all, debug, none] which specifies the target audience of the build.')
-  .option('-v, --verbose',                         'Unleashes the Chatty Kathy to the STDOUT - great for debugging!')
+  .option('-t, --target <target>',                 'One of [all, debug, none] which specifies the target audience of the build. Defaults to none.')
+  .option('-v, --verbose',                         'Unleashes the "Chatty Kathy" to the STDOUT - great for debugging!')
   .parse(process.argv);
 
 if (program.configure) {
