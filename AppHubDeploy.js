@@ -71,7 +71,6 @@ function setup() {
   }
 
   console.log('AppHub configuration saved to .apphub for future deploys.');
-  console.log('');
 };
 
 function readPreviouslySavedAppHubCredentials() {
