@@ -16,7 +16,7 @@ var BUILD_URL;
 
 program
   .version(package.version)
-  .option('-a, --app-versions <app-versions>',     '(Array of Strings, optional): Compatible app versions of the build. Example: ["1.0", "1.1"] Defaults to value in info.plist of build file.' )
+  .option('-a, --app-versions <app-versions>',     '(Array of Strings, optional): Compatible app versions of the build. Example: -a \'["1.0.3", "1.0.4"]\' Defaults to value in info.plist of build file.' )
   .option('-c, --configure',                       '(Re)Configure AppHub ID and Secret key')
   .option('-d, --build-description <description>', '(String, optional): Description of the build.')
   .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
