@@ -22,7 +22,7 @@ program
   .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
   .option('-n, --build-name <name>',               '(String, optional): Name of the build.')
   .option('-r, --retain-build',                    'Do not remove the build after a successful deploy. By default it will be removed.')
-  .option('-t, --my-target <target>',              '(String, optional, default: none): One of [all, debug, none] which specifies the target audience of the build.')
+  .option('-t, --target <target>',                 '(String, optional, default: none): One of [all, debug, none] which specifies the target audience of the build.')
   .option('-v, --verbose',                         'Unleashes the Chatty Kathy to the STDOUT - great for debugging!')
   .parse(process.argv);
 
