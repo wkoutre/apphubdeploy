@@ -16,9 +16,14 @@ var BUILD_URL;
 
 program
   .version(package.version)
-  .option('-c, --configure', '(Re)Configure AppHub ID and Secret key')
-  .option('-o, --open-build-url', 'Open AppHub Builds URL after a successful build and deploy.')
-  .option('-r, --retain-build',              'Do not remove the build after a successful deploy. By default it will be removed.')
+  .option('-a, --app-versions <app-versions>', '(Array of Strings, optional): Compatible app versions of the build. Example: ["1.0", "1.1"] Defaults to value in info.plist of build file.' )
+  .option('-c, --configure',                   '(Re)Configure AppHub ID and Secret key')
+  .option('-d, --description <description>',   '(String, optional): Description of the build.')
+  .option('-o, --open-build-url',              'Open AppHub Builds URL after a successful build and deploy.')
+  .option('-n, --name <name>',                 '(String, optional): Name of the build.')
+  .option('-r, --retain-build',                'Do not remove the build after a successful deploy. By default it will be removed.')
+  .option('-t, --target <target>',             '(String, optional, default: none): One of [all, debug, none] which specifies the target audience of the build.')
+  .option('-v, --verbose',                     'Unlealshes the Chatty Kathy the STDOUT - great for debugging!')
   .parse(process.argv);
 
 if (program.configure) {
@@ -81,7 +86,8 @@ function readPreviouslySavedAppHubCredentials() {
       throw new Error('One or both of your AppHub credentials are blank');
 
     // .apphub file exists, can be read and the credentials are reasonable (i.e. present and not blank).
-    console.log('.apphub file exists! Reading credentials.');
+    if (program.verbose)
+      console.log('Found .apphub file! Reading credentials.');
 
     APP_HUB_ID     = appHubData.appHubId;
     APP_HUB_SECRET = appHubData.appHubSecret;
@@ -101,46 +107,80 @@ function readPreviouslySavedAppHubCredentials() {
 
 
 function build() {
-  console.log('Building...');
+  console.log('');
+  process.stdout.write('Building... ');
 
   buildResult = require('child_process').execSync( './node_modules/.bin/apphub build --verbose -o ' + BUILD_FILE_NAME ).toString();
 
-  console.log(buildResult);
-  console.log('');
-  console.log('BUILD SUCCESSFUL!');
-  console.log('');
+  if (program.verbose) {
+    console.log(buildResult);
+    console.log('');
+  }
+
+
+  process.stdout.write('Done!');
 };
 
 function deploy() {
-  console.log('Deploying...');
   console.log('');
+  process.stdout.write('Deploying... ');
 
   try {
+    // Compile any Meta Data into an Array to be used in the cURL request.
+    var metaData = [];
+    if (program.target)
+    metaData.push( ' "target": "' + program.target + '"' );
+
+    if (program.name)
+    metaData.push( ' "name": "' + program.name + '"' );
+
+    if (program.description)
+    metaData.push( ' "description": "' + program.description + '"' );
+
+    if (program.appVersions)
+    metaData.push( ' "app_versions": ' + program.appVersions );
+
     getUrlForPutCommand =  'curl -X GET';
+    if (!program.verbose)
+      getUrlForPutCommand += ' --silent';
     getUrlForPutCommand += ' -H "X-AppHub-Application-ID: ' + APP_HUB_ID + '"';
     getUrlForPutCommand += ' -H "X-AppHub-Application-Secret: ' + APP_HUB_SECRET + '"';
     getUrlForPutCommand += ' -H "Content-Type: application/zip"';
+
+    // Add Meta Data if any are set with the options.
+    if (metaData.length > 0)
+    getUrlForPutCommand += ' -H \'X-AppHub-Build-Metadata: { ' + metaData.join(', ') + ' }\'';
+
     getUrlForPutCommand += ' -L https://api.apphub.io/v1/upload';
     getUrlForPutCommand += ' | python -c \'import json,sys;obj=json.load(sys.stdin);print obj["data"]["s3_url"]\'';
 
     urlForPut = require('child_process').execSync( getUrlForPutCommand ).toString().trim();
 
-    console.log('urlForPut:');
-    console.log(urlForPut);
+    if (program.verbose) {
+      console.log('urlForPut:');
+      console.log(urlForPut);
+    }
 
     putCommand  = 'curl -X PUT';
+    if (!program.verbose)
+      putCommand += ' --silent';
     putCommand += ' -H "Content-Type: application/zip"';
     putCommand += ' -L "' + urlForPut + '"';
     putCommand += ' --upload-file ' + BUILD_FILE_NAME;
 
-    console.log('putCommand:');
-    console.log(putCommand);
+    if (program.verbose) {
+      console.log('putCommand:');
+      console.log(putCommand);
+    }
 
     putResponse = require('child_process').execSync( putCommand ).toString().trim();
 
-    console.log( putResponse );
-    console.log('');
-    console.log("DEPLOY SUCCESSFUL!");
+    if (program.verbose) {
+      console.log( putResponse );
+      console.log('');
+    }
+
+    process.stdout.write('Done!');
   }
   catch(error) {
     console.log('');
@@ -151,27 +191,28 @@ function deploy() {
   }
 
   console.log('');
+  console.log('');
   console.log('SUCCESSFULLY BUILT AND DEPLOYED TO APPHUB!')
   console.log('');
 
   console.log('You can see your build here: ' + BUILD_URL);
-  console.log('');
 
 };
 
 function removeBuildFile() {
   try {
     console.log('');
-    console.log('Removing Build File...');
-    console.log('');
+    process.stdout.write('Removing Build File... ');
 
-
-    console.log('BUILD_FILE_PATH: ')
-    console.log(BUILD_FILE_PATH);
+    if (program.verbose) {
+      console.log('BUILD_FILE_PATH: ')
+      console.log(BUILD_FILE_PATH);
+    }
 
     fs.unlinkSync(BUILD_FILE_PATH)
 
-    console.log('BUILD FILE REMOVED!');
+    process.stdout.write('Done!');
+    console.log('');
     console.log('');
   }
   catch(error) {
