@@ -16,14 +16,14 @@ var BUILD_URL;
 
 program
   .version(package.version)
-  .option('-a, --app-versions <app-versions>', '(Array of Strings, optional): Compatible app versions of the build. Example: ["1.0", "1.1"] Defaults to value in info.plist of build file.' )
-  .option('-c, --configure',                   '(Re)Configure AppHub ID and Secret key')
-  .option('-d, --description <description>',   '(String, optional): Description of the build.')
-  .option('-o, --open-build-url',              'Open AppHub Builds URL after a successful build and deploy.')
-  .option('-n, --name <name>',                 '(String, optional): Name of the build.')
-  .option('-r, --retain-build',                'Do not remove the build after a successful deploy. By default it will be removed.')
-  .option('-t, --target <target>',             '(String, optional, default: none): One of [all, debug, none] which specifies the target audience of the build.')
-  .option('-v, --verbose',                     'Unlealshes the Chatty Kathy the STDOUT - great for debugging!')
+  .option('-a, --app-versions <app-versions>',     '(Array of Strings, optional): Compatible app versions of the build. Example: ["1.0", "1.1"] Defaults to value in info.plist of build file.' )
+  .option('-c, --configure',                       '(Re)Configure AppHub ID and Secret key')
+  .option('-d, --build-description <description>', '(String, optional): Description of the build.')
+  .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
+  .option('-n, --build-name <name>',               '(String, optional): Name of the build.')
+  .option('-r, --retain-build',                    'Do not remove the build after a successful deploy. By default it will be removed.')
+  .option('-t, --my-target <target>',              '(String, optional, default: none): One of [all, debug, none] which specifies the target audience of the build.')
+  .option('-v, --verbose',                         'Unlealshes the Chatty Kathy the STDOUT - great for debugging!')
   .parse(process.argv);
 
 if (program.configure) {
@@ -128,16 +128,16 @@ function deploy() {
     // Compile any Meta Data into an Array to be used in the cURL request.
     var metaData = [];
     if (program.target)
-    metaData.push( ' "target": "' + program.target + '"' );
+      metaData.push( ' "target": "' + program.target + '"' );
 
-    if (program.name)
-    metaData.push( ' "name": "' + program.name + '"' );
+    if (program.buildName)
+      metaData.push( ' "name": "' + program.buildName + '"' );
 
-    if (program.description)
-    metaData.push( ' "description": "' + program.description + '"' );
+    if (program.buildDescription)
+      metaData.push( ' "description": "' + program.buildDescription + '"' );
 
     if (program.appVersions)
-    metaData.push( ' "app_versions": ' + program.appVersions );
+      metaData.push( ' "app_versions": ' + program.appVersions );
 
     getUrlForPutCommand =  'curl -X GET';
     if (!program.verbose)
@@ -148,7 +148,7 @@ function deploy() {
 
     // Add Meta Data if any are set with the options.
     if (metaData.length > 0)
-    getUrlForPutCommand += ' -H \'X-AppHub-Build-Metadata: { ' + metaData.join(', ') + ' }\'';
+      getUrlForPutCommand += ' -H \'X-AppHub-Build-Metadata: { ' + metaData.join(', ') + ' }\'';
 
     getUrlForPutCommand += ' -L https://api.apphub.io/v1/upload';
     getUrlForPutCommand += ' | python -c \'import json,sys;obj=json.load(sys.stdin);print obj["data"]["s3_url"]\'';
