@@ -18,6 +18,7 @@ program
   .version(package.version)
   .option('-c, --configure', '(Re)Configure AppHub ID and Secret key')
   .option('-o, --open-build-url', 'Open AppHub Builds URL after a successful build and deploy.')
+  .option('-r, --retain-build',              'Do not remove the build after a successful deploy. By default it will be removed.')
   .parse(process.argv);
 
 if (program.configure) {
@@ -33,10 +34,16 @@ build();
 
 deploy();
 
+if (!program.retainBuild)
+  removeBuildFile();
+
 if (program.openBuildUrl)
   openBuildUrl();
 
 process.exit(0);
+
+
+
 
 // Private Functions
 
@@ -143,6 +150,16 @@ function deploy() {
     process.exit(1);
   }
 
+  console.log('');
+  console.log('SUCCESSFULLY BUILT AND DEPLOYED TO APPHUB!')
+  console.log('');
+
+  console.log('You can see your build here: ' + BUILD_URL);
+  console.log('');
+
+};
+
+function removeBuildFile() {
   try {
     console.log('');
     console.log('Removing Build File...');
@@ -156,9 +173,6 @@ function deploy() {
 
     console.log('BUILD FILE REMOVED!');
     console.log('');
-
-
-
   }
   catch(error) {
     console.log('');
@@ -168,15 +182,7 @@ function deploy() {
 
     process.exit(1);
   }
-
-  console.log('');
-  console.log('SUCCESSFULLY BUILT AND DEPLOYED TO APPHUB!')
-  console.log('');
-
-  console.log('You can see your build here: ' + BUILD_URL);
-  console.log('');
-
-};
+}
 
 function openBuildUrl() {
   console.log('Opening AppHub Builds in your browser...');
