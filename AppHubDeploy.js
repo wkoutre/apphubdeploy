@@ -164,6 +164,11 @@ function deploy() {
     getUrlForPutCommand += ' -L https://api.apphub.io/v1/upload';
     getUrlForPutCommand += ' | python -c \'import json,sys;obj=json.load(sys.stdin);print obj["data"]["s3_url"]\'';
 
+    if (program.verbose) {
+      console.log('GET Command:');
+      console.log(getUrlForPutCommand);
+    }
+
     urlForPut = require('child_process').execSync( getUrlForPutCommand ).toString().trim();
 
     if (program.verbose) {
