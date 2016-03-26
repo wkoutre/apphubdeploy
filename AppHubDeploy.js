@@ -26,6 +26,8 @@ program
   .option('-v, --verbose',                         'Unleashes the "Chatty Kathy" to the STDOUT - great for debugging!')
   .parse(process.argv);
 
+checkOptionValues();
+
 if (program.configure) {
   setup();
 }
@@ -52,6 +54,15 @@ process.exit(0);
 
 // Private Functions
 
+function checkOptionValues() {
+  permittedValues = ["all", "debug", "none"];
+
+  if (program.target && !permittedValues.includes(program.target)) {
+    console.log('-t --target option needs to be one of ' + permittedValues.join(", ") + '.');
+    console.log('');
+    process.exit(1);
+  }
+}
 
 function setup() {
   APP_HUB_ID     = readlineSync.question('AppHub App ID: ');
