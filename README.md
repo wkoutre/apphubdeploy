@@ -18,17 +18,21 @@ This will install AppHubDeploy globally so you can use it in all of your AppHub 
 
 ## Usage
 
-In your project root directory:
+This will build and deploy to AppHub.io with the default settings:
 
 ```bash
+# In your project root directory.
+
 $ apphubdeploy
-# => This will build and deploy with the default settings.
+
 ```
 
+This will create and deploy a build with a **name** and **description** that's targeted to your **debug** users running **version 1.0.3** of your app:
+
 ```bash
+# In your project root directory.
+
 $ apphubdeploy -n "Build Name" -d "Build Description" -t debug -a '["1.0.3"]'
-# => This will create and deploy a build with a name and description that's
-#    targeted to your debug users running version 1.0.3 of your app.
 ```
 
 The first time you call `apphubdeploy` in a project directory it will prompt you for your **AppHub ID** and **AppHub Secret**, which can be found on the settings panel of your [AppHub.io][1] account.
