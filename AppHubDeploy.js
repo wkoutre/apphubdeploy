@@ -137,18 +137,18 @@ function deploy() {
 
   try {
     // Compile any Meta Data into an Array to be used in the cURL request.
-    var metaData = [];
+    var metaData = {};
     if (program.target)
-      metaData.push( ' "target": "' + program.target + '"' );
+      metaData['target'] = program.target;
 
     if (program.buildName)
-      metaData.push( ' "name": "' + program.buildName + '"' );
+      metaData['name'] = program.buildName;
 
     if (program.buildDescription)
-      metaData.push( ' "description": "' + program.buildDescription + '"' );
+      metaData['description'] = program.buildDescription;
 
     if (program.appVersions)
-      metaData.push( ' "app_versions": ' + program.appVersions );
+      metaData['app_versions'] = program.appVersions;
 
     getUrlForPutCommand =  'curl -X GET';
     if (!program.verbose)
@@ -158,8 +158,8 @@ function deploy() {
     getUrlForPutCommand += ' -H "Content-Type: application/zip"';
 
     // Add Meta Data if any are set with the options.
-    if (metaData.length > 0)
-      getUrlForPutCommand += ' -H \'X-AppHub-Build-Metadata: { ' + metaData.join(', ') + ' }\'';
+    if (JSON.stringify(metaData) !== JSON.stringify({}))
+      getUrlForPutCommand += ' -H \'X-AppHub-Build-Metadata: ' + JSON.stringify(metaData).replace(/'/g, '_') + "'";
 
     getUrlForPutCommand += ' -L https://api.apphub.io/v1/upload';
     getUrlForPutCommand += ' | python -c \'import json,sys;obj=json.load(sys.stdin);print obj["data"]["s3_url"]\'';
