@@ -1,4 +1,4 @@
-![AppHub Deploy Logo](readme_assets/AppHub Deploy Logo.png)
+<img src="readme_assets/apphubdeploy_logo.png" width="667">
 
 [![npm version](https://badge.fury.io/js/apphubdeploy.svg)](https://badge.fury.io/js/apphubdeploy)
 
