@@ -18,17 +18,19 @@ This will install AppHubDeploy globally so you can use it in all of your AppHub 
 
 ## Usage
 
+_Run from your project root directory._
+
 This will build and deploy to AppHub.io with the default settings:
 
 ```bash
-<project_root> $ apphubdeploy
+$ apphubdeploy
 
 ```
 
 This will create and deploy a build with a **name** and **description** that's targeted to your **debug** users running **version 1.0.3** of your app:
 
 ```bash
-<project_root> $ apphubdeploy -n "Build Name" -d "Build Description" -t debug -a '["1.0.3"]'
+$ apphubdeploy -n "Build Name" -d "Build Description" -t debug -a '["1.0.3"]'
 ```
 
 #### AppHub Credentials
