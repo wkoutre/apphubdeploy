@@ -53,6 +53,12 @@ In the event that you need to change your AppHub credentials, either modify the 
 
 You can pass a number of options to the `apphubdeploy` command in order to specify how the build will be treated by AppHub as well as other options for the CLI like `--verbose`.
 
+You can get a list of all the options by passing `-h` or `--help` as an option: 
+
+```bash
+$ apphubdeploy --help
+```
+
 
 #### AppHub Build Options
 
