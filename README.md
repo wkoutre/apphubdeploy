@@ -34,7 +34,7 @@ The real power of AppHub Deploy comes when you add options such as `-t` / `--tar
 For example, this will create and deploy a build with a **name** and **description** that's targeted to your **debug** users who are running **version 1.0.3** of your app:
 
 ```bash
-$ apphubdeploy -n "Build Name" -d "Build Description" -t debug -a '["1.0.3"]'
+$ apphubdeploy -n "Build Name" -d "Build Description" -t "debug" -a '["1.0.3"]'
 ```
 
 Less time clicking and more time being awesome.
