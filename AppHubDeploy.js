@@ -16,7 +16,7 @@ var BUILD_URL;
 
 program
   .version(package.version)
-  .option('-a, --app-versions <app-versions>',     'Array of app version strings that are compatible with this build. MUST wrap version numbers in double quotes! Example: -a \'["1.0.3", "1.0.4"]\' Defaults to value in info.plist of build file.' )
+  .option('-a, --app-versions <app-versions>',     'App Versions separated by commas that are compatible with this build. Either do not use a space in between version or wrap it in quotes. Example: -a 1.0.3,1.0.4 Defaults to value in info.plist of build file.' )
   .option('-c, --configure',                       '(Re)Configure AppHub ID and Secret key.')
   .option('-d, --build-description <description>', 'Description of the build. Wrap in quotes if more than one word.')
   .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
@@ -150,6 +150,33 @@ function deploy() {
     if (program.appVersions)
       metaData['app_versions'] = program.appVersions;
 
+    var metaDataString = '{ ';
+
+    Object.keys(metaData).forEach( (key, index) => {
+      if (index != 0)
+        metaDataString += ', ';
+
+      metaDataString += '"' + key + '": ';
+
+      if (key == 'app_versions') {
+        metaDataString += '[';
+
+        metaData[key].split(',').forEach( (appVersion, index) => {
+          if (index != 0)
+            metaDataString += ',';
+
+          metaDataString += '"' + appVersion.trim() + '"';
+        })
+
+        metaDataString += ']';
+      }
+      else {
+        metaDataString += '"' + metaData[key] + '"';
+      }
+    })
+
+    metaDataString += ' }'
+
     getUrlForPutCommand =  'curl -X GET';
     if (!program.verbose)
       getUrlForPutCommand += ' --silent';
@@ -158,8 +185,8 @@ function deploy() {
     getUrlForPutCommand += ' -H "Content-Type: application/zip"';
 
     // Add Meta Data if any are set with the options.
-    if (JSON.stringify(metaData) !== JSON.stringify({}))
-      getUrlForPutCommand += ' -H \'X-AppHub-Build-Metadata: ' + JSON.stringify(metaData).replace(/'/g, '_') + "'";
+    if (metaDataString != '{  }')
+      getUrlForPutCommand += ' -H \'X-AppHub-Build-Metadata: ' + metaDataString.replace(/'/g, '_') + "'";
 
     getUrlForPutCommand += ' -L https://api.apphub.io/v1/upload';
     getUrlForPutCommand += ' | python -c \'import json,sys;obj=json.load(sys.stdin);print obj["data"]["s3_url"]\'';

@@ -34,7 +34,7 @@ The real power of AppHub Deploy comes when you add options such as `-t` / `--tar
 For example, this will create and deploy a build with a **name** and **description** that's targeted to your **debug** users who are running **version 1.0.3** of your app:
 
 ```bash
-$ apphubdeploy -n "Build Name" -d "Build Description" -t "debug" -a '["1.0.3"]'
+$ apphubdeploy -n "Build Name" -d "Build Description" -t "debug" -a 1.0.3
 ```
 
 Less time clicking and more time being awesome.
@@ -53,7 +53,7 @@ In the event that you need to change your AppHub credentials, either modify the 
 
 You can pass a number of options to the `apphubdeploy` command in order to specify how the build will be treated by AppHub as well as other options for the CLI like `--verbose`.
 
-You can get a list of all the options by passing `-h` or `--help` as an option: 
+You can get a list of all the options by passing `-h` or `--help` as an option:
 
 ```bash
 $ apphubdeploy --help
@@ -64,7 +64,7 @@ $ apphubdeploy --help
 
 Short Flag | Long Flag                          | Description
 -----------|------------------------------------|------------
--a         | --app-versions <app-versions>      | Array of app version strings that are compatible with this build. <br> **MUST wrap version numbers in double quotes!** <br> Example: `-a '["1.0.3", "1.0.4"]'` <br> Defaults to value in `info.plist` of build file.
+-a         | --app-versions <app-versions>      | App Versions separated by commas that are compatible with this build. Either do not use a space in between version or wrap it in quotes. <br> Example: -a 1.0.3,1.0.4 <br> Defaults to value in info.plist of build file.
 -d         | --build-description <description>  | Description of the build. Wrap in quotes if more than one word.
 -n         | --build-name <name>                | Name of the build. Wrap in quotes if more than one word.
 -t         | --target <target>                  | One of `all`, `debug` or `none` which specifies the target audience of the build. Defaults to `none`.
