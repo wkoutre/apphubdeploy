@@ -1,4 +1,5 @@
-#!/usr/bin/env node --harmony
+#!/bin/sh
+exec node --harmony <<EOF
 
 var fs           = require('fs');
 var open         = require('open');
@@ -272,3 +273,5 @@ function openBuildUrl() {
 
   open(BUILD_URL);
 };
+
+EOF
