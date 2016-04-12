@@ -1,4 +1,5 @@
-#!/usr/bin/env node-harmony
+#!/bin/sh
+":" //# comment; exec /usr/bin/env node --harmony "$0" "$@"
 
 var fs           = require('fs');
 var open         = require('open');
