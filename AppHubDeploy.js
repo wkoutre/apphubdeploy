@@ -1,6 +1,8 @@
 #!/bin/sh
 ":" //# comment; exec /usr/bin/env node --harmony "$0" "$@"
 
+// http://stackoverflow.com/a/28739537/5498949 for above.
+
 var fs           = require('fs');
 var open         = require('open');
 var package      = require('./package.json');
