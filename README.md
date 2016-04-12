@@ -48,6 +48,13 @@ Your AppHub credentials will be stored in a `.apphub` file that is readable only
 
 In the event that you need to change your AppHub credentials, either modify the `.apphub` file itself or simply run `apphubdeploy` with the `--configure` option, like `apphubdeploy --configure`, and you will be prompted for your credentials again.
 
+##### .apphub File
+
+In the event that you're creating the `.apphub` file yourself, for example with an integration server, here is the sample format for the file: 
+
+```json
+{"appHubId":"thisismywonderfulapphubid","appHubSecret":"andthisismywonderfulapphubsecretshhhhh"}
+```
 
 ## Options
 
