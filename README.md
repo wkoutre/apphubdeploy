@@ -100,9 +100,10 @@ Short Flag | Long Flag                          | Description
 
 The MIT License (MIT)
 
-Copyright (c) 2016 - `Time.now()`, Joshua Pinter
+Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 
 
-[1]: https://apphub.io/
-[irfaan]: https://twitter.com/irfaan
-[matt]: https://twitter.com/m_arbesfeld
+[1]:            https://apphub.io/
+[irfaan]:       https://twitter.com/irfaan
+[matt]:         https://twitter.com/m_arbesfeld
+[joshuapinter]: https://twitter.com/joshuapinter
