@@ -92,7 +92,7 @@ Short Flag | Long Flag                          | Description
 ## Many Thanks To
 
 * My friend **[Irfaan][irfaan]** for tirelessly helping test the early versions and providing endless encouragment.
-* **[Matt][matt]** over at AppHub for working through uploading to their REST API with me.
+* **[Matt][matt]** over at AppHub for testing their REST API with me.
 * The **[AppHub.io Platform][1]**, in general, for producing such a useful and easy-to-use tool that inspires and streamlines our development.
 
 
