@@ -69,24 +69,24 @@ $ apphubdeploy --help
 
 #### AppHub Build Options
 
-Short Flag | Long Flag                          | Description
------------|------------------------------------|------------
--a         | --app-versions <app-versions>      | App Versions separated by commas that are compatible with this build. Either do not use a space in between version or wrap it in quotes. <br> Example: -a 1.0.3,1.0.4 <br> Defaults to value in info.plist of build file.
--d         | --build-description <description>  | Description of the build. Wrap in quotes if more than one word.
--n         | --build-name <name>                | Name of the build. Wrap in quotes if more than one word.
--t         | --target <target>                  | One of `all`, `debug` or `none` which specifies the target audience of the build. Defaults to `none`.
+Short Flag   | Long Flag                            | Description
+-------------|--------------------------------------|------------
+`-a`         | `--app-versions <app-versions>`      | App Versions separated by commas that are compatible with this build. Either do not use a space in between version or wrap it in quotes. <br> Example: `-a 1.0.3,1.0.4` <br><br>_Defaults to value in info.plist of build file._
+`-d`         | `--build-description <description>`  | Description of the build. Wrap in quotes if it includes spaces.
+`-n`         | `--build-name <name>`                | Name of the build. Wrap in quotes if it includes spaces.
+`-t`         | `--target <target>`                  | One of `all`, `debug` or `none` which specifies the target audience of the build. <br><br>_Defaults to `none`._
 
 
-#### CLI Options
+#### Other Options
 
-Short Flag | Long Flag                          | Description
------------|------------------------------------|------------
--c         | --configure                        | (Re)Configure AppHub ID and Secret key.
--h         | --help                             | Output usage information.
--o         | --open-build-url                   | Open AppHub Builds URL with your default browser after a successful build and deploy
--r         | --retain-build                     | Do not remove the build after a successful deploy. By default it will be removed.
--v         | --verbose                          | Unleashes "Chatty Kathy" to the STDOUT - great for debugging!
--V         | --version                          | Output the version number.
+Short Flag   | Long Flag                            | Description
+-------------|--------------------------------------|------------
+`-c`         | `--configure`                        | (Re)Configure AppHub ID and Secret key.
+`-h`         | `--help`                             | Output usage information.
+`-o`         | `--open-build-url`                   | Open AppHub Builds URL with your default browser after a successful build and deploy.
+`-r`         | `--retain-build`                     | Do not remove the build after a successful deploy. By default it will be removed.
+`-v`         | `--verbose`                          | Unleashes "Chatty Kathy" to the STDOUT - great for debugging!
+`-V`         | `--version`                          | Output the version number.
 
 
 ## Many Thanks To
