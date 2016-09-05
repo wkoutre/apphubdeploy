@@ -24,6 +24,7 @@ program
   .option('-d, --build-description <description>', 'Description of the build. Wrap in quotes if more than one word.')
   .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
   .option('-n, --build-name <name>',               'Name of the build. Wrap in quotes if more than one word.')
+  .option('-p, --plist-file',                      'Use a custom plist file for the `apphub` command.')
   .option('-r, --retain-build',                    'Do not remove the build after a successful deploy. By default it will be removed.')
   .option('-t, --target <target>',                 'One of [all, debug, none] which specifies the target audience of the build. Defaults to none.')
   .option('-v, --verbose',                         'Unleashes the "Chatty Kathy" to the STDOUT - great for debugging!')
@@ -122,14 +123,14 @@ function readPreviouslySavedAppHubCredentials() {
 function build() {
   console.log('');
   process.stdout.write('Building... ');
-
-  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build --verbose -o ' + BUILD_FILE_NAME ).toString();
+  
+  var plist = program.plistFile ? " --plist-file " + program.plistFile : ""
+  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build ' + plist + ' --verbose -o ' + BUILD_FILE_NAME ).toString();
 
   if (program.verbose) {
     console.log(buildResult);
     console.log('');
   }
-
 
   process.stdout.write('Done!');
 };
