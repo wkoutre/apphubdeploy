@@ -125,11 +125,13 @@ function build() {
   console.log('');
   process.stdout.write('Building... ');
   
-  var plist = program.plistFile ? " --plist-file " + program.plistFile : ""
-  var isDev = program.target == "debug" ? " --dev " : " "
-  var entryFile = program.entryFile ? " --entry-file " + program.entryFile : " "
+  var appHubBuildOptions = ["--verbose"]
+  if (program.plistFile) { appHubBuildOptions.push("--plist-file " + program.plistFile) }
+  if (program.entryFile) { appHubBuildOptions.push("--entry-file " + program.entryFile) }
+  if (program.target == "debug") { appHubBuildOptions.push("--dev") }
+  appHubBuildOptions.push("--output-zip " + BUILD_FILE_NAME)
 
-  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build ' + plist + isDev + entryFile + ' --verbose -o ' + BUILD_FILE_NAME ).toString();
+  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build ' + appHubBuildOptions.join(" ") ).toString();
 
   if (program.verbose) {
     console.log(buildResult);
