@@ -24,7 +24,7 @@ program
   .option('-d, --build-description <description>', 'Description of the build. Wrap in quotes if more than one word.')
   .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
   .option('-n, --build-name <name>',               'Name of the build. Wrap in quotes if more than one word.')
-  .option('-p, --plist-file',                      'Use a custom plist file for the `apphub` command.')
+  .option('-p, --plist-file <plist>',              'Use a custom plist file for the `apphub` command.')
   .option('-r, --retain-build',                    'Do not remove the build after a successful deploy. By default it will be removed.')
   .option('-t, --target <target>',                 'One of [all, debug, none] which specifies the target audience of the build. Defaults to none.')
   .option('-v, --verbose',                         'Unleashes the "Chatty Kathy" to the STDOUT - great for debugging!')
