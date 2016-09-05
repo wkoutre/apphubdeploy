@@ -22,8 +22,10 @@ program
   .option('-a, --app-versions <app-versions>',     'App Versions separated by commas that are compatible with this build. Either do not use a space in between version or wrap it in quotes. Example: -a 1.0.3,1.0.4 Defaults to value in info.plist of build file.' )
   .option('-c, --configure',                       '(Re)Configure AppHub ID and Secret key.')
   .option('-d, --build-description <description>', 'Description of the build. Wrap in quotes if more than one word.')
+  .option('-e, --entry-file <entry-file>',         'The entry file for your application e.g. `index.ios.js` passed into `apphub build`.')
   .option('-o, --open-build-url',                  'Open AppHub Builds URL after a successful build and deploy.')
   .option('-n, --build-name <name>',               'Name of the build. Wrap in quotes if more than one word.')
+  .option('-p, --plist-file <plist-file>',         'Use a custom plist file path in the `apphub build` command.')
   .option('-r, --retain-build',                    'Do not remove the build after a successful deploy. By default it will be removed.')
   .option('-t, --target <target>',                 'One of [all, debug, none] which specifies the target audience of the build. Defaults to none.')
   .option('-v, --verbose',                         'Unleashes the "Chatty Kathy" to the STDOUT - great for debugging!')
@@ -122,14 +124,19 @@ function readPreviouslySavedAppHubCredentials() {
 function build() {
   console.log('');
   process.stdout.write('Building... ');
+  
+  var appHubBuildOptions = ["--verbose"]
+  if (program.plistFile) { appHubBuildOptions.push("--plist-file " + program.plistFile) }
+  if (program.entryFile) { appHubBuildOptions.push("--entry-file " + program.entryFile) }
+  if (program.target == "debug") { appHubBuildOptions.push("--dev") }
+  appHubBuildOptions.push("--output-zip " + BUILD_FILE_NAME)
 
-  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build --verbose -o ' + BUILD_FILE_NAME ).toString();
+  buildResult = require('child_process').execSync( './node_modules/.bin/apphub build ' + appHubBuildOptions.join(" ") ).toString();
 
   if (program.verbose) {
     console.log(buildResult);
     console.log('');
   }
-
 
   process.stdout.write('Done!');
 };
