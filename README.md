@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/apphubdeploy.svg)](https://badge.fury.io/js/apphubdeploy)
 
-**Build and Deploy [AppHub.io][1] in one fell swoop.**
+**Build and Deploy to [AppHub.io][1] in one fell swoop.**
 
 ![Screencast](readme_assets/apphubdeploy_screencast.gif)
 
