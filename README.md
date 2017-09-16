@@ -96,11 +96,6 @@ Short Flag   | Long Flag                            | Description
 * **[Matt][matt]** over at AppHub for testing their REST API with me.
 * The **[AppHub.io Platform][1]**, in general, for producing such a useful and easy-to-use tool that inspires and streamlines our development.
 
-## Sponsors
-
-<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/wE6mzDGhLF1m8cBBZJBwHHma/joshuapinter/apphubdeploy'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/wE6mzDGhLF1m8cBBZJBwHHma/joshuapinter/apphubdeploy.svg' /></a>
-
-
 ## License
 
 The MIT License (MIT)
@@ -112,3 +107,6 @@ Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 [irfaan]:       https://twitter.com/irfaan
 [matt]:         https://twitter.com/m_arbesfeld
 [joshuapinter]: https://twitter.com/joshuapinter
+
+
+<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/wE6mzDGhLF1m8cBBZJBwHHma/joshuapinter/apphubdeploy'>  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/wE6mzDGhLF1m8cBBZJBwHHma/joshuapinter/apphubdeploy.svg' /></a>
