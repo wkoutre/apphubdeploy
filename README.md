@@ -108,6 +108,4 @@ Copyright 2016 - `Time.now()` by [Joshua Pinter][joshuapinter]
 [matt]:         https://twitter.com/m_arbesfeld
 [joshuapinter]: https://twitter.com/joshuapinter
 
-## Sponsors
-
 
